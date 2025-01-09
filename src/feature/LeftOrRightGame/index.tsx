@@ -12,87 +12,16 @@ import st from "./style.module.scss";
 
 //게임 시작 애니메이션
 //총 3.7초 3700
-import { drawGameStart, gameStartAnimation } from "./util";
+import {
+  ClearCanvas,
+  drawGameStart,
+  drawRoundRect,
+  gameStartAnimation,
+} from "./util";
 import GameInstance from "./gameInstance";
 import Confetti from "./Confetti";
-
-class Monster {
-  isBlue: boolean;
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-  goLeft: boolean;
-
-  constructor(blueOrGreen: boolean) {
-    this.isBlue = blueOrGreen;
-    this.width = 75;
-    this.height = 75;
-    this.x = 180 - 37;
-    this.y = (500 + 140) / 3;
-    this.goLeft = true;
-  }
-}
-
-type radius = {
-  [index: string]: number;
-  tl: number;
-  tr: number;
-  br: number;
-  bl: number;
-};
-
-function roundRect(
-  ctx: any,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number | radius,
-  fill: boolean,
-  stroke: boolean | undefined
-) {
-  if (typeof stroke === "undefined") {
-    stroke = true;
-  }
-  if (typeof radius === "undefined") {
-    radius = 5;
-  }
-  if (typeof radius === "number") {
-    radius = { tl: radius, tr: radius, br: radius, bl: radius };
-  } else {
-    const defaultRadius: radius = { tl: 0, tr: 0, br: 0, bl: 0 };
-    for (const side in defaultRadius) {
-      radius[side] = radius[side] || defaultRadius[side];
-    }
-  }
-  ctx.beginPath();
-  ctx.moveTo(x + radius.tl, y);
-  ctx.lineTo(x + width - radius.tr, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-  ctx.lineTo(x + width, y + height - radius.br);
-  ctx.quadraticCurveTo(
-    x + width,
-    y + height,
-    x + width - radius.br,
-    y + height
-  );
-  ctx.lineTo(x + radius.bl, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-  ctx.lineTo(x, y + radius.tl);
-  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-  ctx.closePath();
-  if (fill) {
-    ctx.fill();
-  }
-  if (stroke) {
-    ctx.stroke();
-  }
-}
-
-function ClearCanvas(ctx: any, canvas: any) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+import { makeNewMonster } from "./Monster";
+import type { radius } from "./type";
 
 function LeftOrRightGame() {
   //canvas 사용을 위해 필요한 선언 1
@@ -206,10 +135,7 @@ function LeftOrRightGame() {
     moveMonster();
   }
 
-  function makeNewMonster() {
-    const random_boolean = Math.random() < 0.5;
-    return new Monster(random_boolean);
-  }
+
 
   // on button click, start the animation
   function moveMonster() {
@@ -346,7 +272,7 @@ function LeftOrRightGame() {
     // 하얀색 아래쪽 둥근 바탕
     ctx.save();
     ctx.fillStyle = "#DC143C";
-    roundRect(
+    drawRoundRect(
       ctx,
       positionX,
       instance.button.left.y - 110 - 30,
@@ -368,7 +294,7 @@ function LeftOrRightGame() {
 
     ctx.save();
     ctx.fillStyle = "white";
-    roundRect(
+    drawRoundRect(
       ctx,
       positionX,
       instance.button.left.y - 110 - 30,
@@ -436,13 +362,13 @@ function LeftOrRightGame() {
     };
     ctx.save();
     ctx.fillStyle = "DarkRed";
-    roundRect(ctx, 40, 30, 360 - 40 - 40, 30, radius, true, false);
+    drawRoundRect(ctx, 40, 30, 360 - 40 - 40, 30, radius, true, false);
     ctx.restore();
 
     ctx.save();
     ctx.fillStyle = "white";
     // 흰색 바
-    roundRect(ctx, 40, 30, instance.timer.width, 30, radius, true, false);
+    drawRoundRect(ctx, 40, 30, instance.timer.width, 30, radius, true, false);
 
     ctx.beginPath();
     ctx.arc(40 + 15, 30 + 15, 15, 0, 2 * Math.PI);

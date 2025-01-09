@@ -2,6 +2,8 @@
 // 1초마다 0.7만에 +360, 0.3 동안 값 상승 정지
 // 마지막에 game start! 메세지는 0.5초동안 출력
 
+import { radius } from "./type";
+
 export function drawGameStart(
   ctx: any,
   canvasWidth: number,
@@ -116,4 +118,54 @@ export function gameStartAnimation(instance: any, canvasWidth: number) {
       }
     }, 25);
   }, 3000);
+}
+export function drawRoundRect(
+  ctx: any,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number | radius,
+  fill: boolean,
+  stroke?: boolean
+) {
+  if (typeof stroke === "undefined") {
+    stroke = true;
+  }
+  if (typeof radius === "undefined") {
+    radius = 5;
+  }
+  if (typeof radius === "number") {
+    radius = { tl: radius, tr: radius, br: radius, bl: radius };
+  } else {
+    const defaultRadius: radius = { tl: 0, tr: 0, br: 0, bl: 0 };
+    for (const side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width - radius.br,
+    y + height
+  );
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
+}
+export function ClearCanvas(ctx: any, canvas: any) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
