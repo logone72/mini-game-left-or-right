@@ -13,65 +13,8 @@ import st from "./style.module.scss";
 //게임 시작 애니메이션
 //총 3.7초 3700
 import { drawGameStart, gameStartAnimation } from "./util";
-
-type TGameCanvas = {
-  height: number;
-  width: number;
-};
-
-class GameData {
-  gameCanvas: TGameCanvas = {
-    width: 360,
-    height: 500 + 140,
-  };
-
-  gameStartAnimation = {
-    value: 0,
-  };
-
-  state = {
-    ended: false,
-    started: false,
-  };
-
-  ifEnd = {
-    height: -(500 + 140),
-  };
-
-  ballDistance = {
-    x: 10,
-    y: 32, //공 위아래 간격
-  };
-
-  timer = {
-    width: 30,
-    maxWidth: 360 - 40 * 2,
-    maxPlayTime: 15, //15초
-    cntDownTime: 3700,
-    time: 0,
-  };
-
-  score = {
-    location: 160,
-  };
-
-  button = {
-    // 버튼 위치 세로 = height/ 3 = 167 * 2 = 334, 가로 좌우 마진 30px 4등분 300 / 4 = 75, 왼쪽 75 오른쪽 225
-    height: 75,
-    width: 75,
-    margin: 25,
-
-    left: {
-      x: 25,
-      y: 500 + 140 - 75 - 50, //canvas height - button Height - 50;
-    },
-
-    right: {
-      x: 360 - 75 - 25, //canvas width - button width - margin
-      y: 500 + 140 - 75 - 50,
-    },
-  };
-}
+import GameInstance from "./gameInstance";
+import Confetti from "./Confetti";
 
 class Monster {
   isBlue: boolean;
@@ -155,7 +98,7 @@ function LeftOrRightGame() {
   //canvas 사용을 위해 필요한 선언 1
   const canvasRef: any = useRef(null);
 
-  const [instance] = useState(() => new GameData());
+  const [instance] = useState(() => new GameInstance());
 
   let wrongMonster: any = null;
   const monsterList: any = [];
@@ -190,8 +133,6 @@ function LeftOrRightGame() {
     }, 3700 + 4000);
   });
 
-  useEffect(() => {});
-
   // onclick + touch handler in canvas tag
   const handleCanvasClick = (event: any) => {
     if (
@@ -200,8 +141,8 @@ function LeftOrRightGame() {
     )
       return;
 
-    const canvas2 = canvasRef.current;
-    const rect = canvas2.getBoundingClientRect();
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
 
     const x = event.clientX - rect.left; //canvas.offsetLeft or Right
     const y = event.clientY - rect.top;
@@ -225,7 +166,7 @@ function LeftOrRightGame() {
     }
   };
 
-  function leftOrRightEventHandle(whichPressed: string) {
+  function leftOrRightEventHandle(whichPressed: "left" | "right") {
     const ball = monsterList.pop();
     let success = true;
 
@@ -548,65 +489,10 @@ function LeftOrRightGame() {
     ctx.restore();
   }
 
-  function Confetti(this: any) {
-    //construct confetti
-    const colours = ["#fde132", "#009bde", "#ff6b00"];
-
-    this.x = Math.round(Math.random() * instance.gameCanvas.width);
-    this.y =
-      Math.round(Math.random() * instance.gameCanvas.height) -
-      instance.gameCanvas.height / 2;
-    this.rotation = Math.random() * 360;
-
-    const size = Math.random() * (instance.gameCanvas.width / 60);
-    this.size = size < 15 ? 15 : size;
-
-    this.color = colours[Math.floor(colours.length * Math.random())];
-
-    this.speed = this.size / 7;
-
-    this.opacity = Math.random();
-
-    this.shiftDirection = Math.random() > 0.5 ? 1 : -1;
-  }
-
-  Confetti.prototype.border = function () {
-    if (this.y >= instance.gameCanvas.height) {
-      this.y = instance.gameCanvas.height;
-    }
-  };
-
-  Confetti.prototype.update = function () {
-    this.y += this.speed;
-
-    if (this.y <= instance.gameCanvas.height) {
-      this.x += this.shiftDirection / 3;
-      this.rotation += (this.shiftDirection * this.speed) / 100;
-    }
-
-    if (this.y > instance.gameCanvas.height) this.border();
-  };
-
-  Confetti.prototype.draw = function (ctx: any) {
-    ctx.beginPath();
-    ctx.arc(
-      this.x,
-      this.y,
-      this.size,
-      this.rotation,
-      this.rotation + Math.PI / 2
-    );
-    ctx.lineTo(this.x, this.y);
-    ctx.closePath();
-    ctx.globalAlpha = this.opacity;
-    ctx.fillStyle = this.color;
-    ctx.fill();
-  };
-
   const confNum = Math.floor(instance.gameCanvas.width / 4);
   const confs = new Array(confNum)
     .fill(undefined)
-    .map(() => new (Confetti as any)());
+    .map(() => new Confetti(instance));
 
   function drawGameFinish(ctx: any) {
     ctx.save();
