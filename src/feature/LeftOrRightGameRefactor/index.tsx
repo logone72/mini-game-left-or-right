@@ -21,11 +21,10 @@ function LeftOrRightGameRefactor() {
     if (canvasRef.current && !gameInstanceRef.current) {
       gameInstanceRef.current = new GameInstance(canvasRef.current);
 
+      gameInstanceRef.current.renderGame();
       void gameInstanceRef.current.startGame();
-
-      renderGame();
     }
-  }, [canvasRef.current, renderGame]);
+  }, [canvasRef.current]);
 
   return (
     <div className={st.LeftOrRightGame}>

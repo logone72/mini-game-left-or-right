@@ -47,11 +47,13 @@ class Timer {
   };
 
   gameTime: GameTime;
+  timer: number | null;
   ctx: CanvasRenderingContext2D;
   onEnd?: () => void;
 
   constructor(ctx: CanvasRenderingContext2D, options?: TimerOptions) {
-    this.gameTime = Timer.initialValue;
+    this.gameTime = { ...Timer.initialValue };
+    this.timer = null;
     this.ctx = ctx;
 
     if (options?.canvasWidth) {
@@ -65,7 +67,7 @@ class Timer {
   }
 
   start() {
-    const timer = setInterval(() => {
+    this.timer = setInterval(() => {
       const progressWidth =
         (this.gameTime.maxProgressWidth - Timer.viewConstant.minProgressWidth) /
         (this.gameTime.maxPlayTime * 100);
@@ -78,10 +80,24 @@ class Timer {
         this.gameTime.timePassed = this.gameTime.maxPlayTime;
         this.gameTime.progressWidth = this.gameTime.maxProgressWidth;
 
-        clearInterval(timer);
+        if (this.timer) {
+          clearInterval(this.timer);
+        }
+        this.timer = null;
+
         this.onEnd?.();
       }
     }, 10);
+  }
+
+  clear() {
+    this.gameTime = { ...Timer.initialValue };
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+    this.timer = null;
+
+    this.draw();
   }
 
   draw() {
