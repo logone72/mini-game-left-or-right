@@ -21,7 +21,7 @@ function LeftOrRightGameRefactor() {
     if (canvasRef.current && !gameInstanceRef.current) {
       gameInstanceRef.current = new GameInstance(canvasRef.current);
 
-      gameInstanceRef.current.startGame();
+      void gameInstanceRef.current.startGame();
 
       renderGame();
     }

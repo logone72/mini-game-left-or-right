@@ -1,3 +1,5 @@
+import { wait } from "../utils/time-helper";
+
 type CountDownOptions = {
   canvasWidth: number;
   canvasHeight: number;
@@ -8,6 +10,9 @@ class GameStartCountdown {
     font: "bold 100px Trebuchet MS",
     fontColor: "white",
   };
+
+  // processAnimation 의 wait 총합 (추후 이 값으로 자동 설정되게 개선)
+  static countDownTime = 3500;
 
   ctx: CanvasRenderingContext2D;
   options: CountDownOptions;
@@ -90,7 +95,7 @@ class GameStartCountdown {
     ctx.restore();
   }
 
-  processAnimation() {
+  async processAnimation() {
     const canvasWidth = this.options.canvasWidth;
 
     // 3초
@@ -104,46 +109,44 @@ class GameStartCountdown {
     }, 25); // 1000 = 1초이니 700 = 0.7초, 총 700/ 25 = 28프레임 으로 360을 나눠서 글자들 이동 및 출력
 
     // 2초
-    setTimeout(() => {
-      const twoSecond = setInterval(() => {
-        this.countdownAnimationValue += canvasWidth / 28;
+    await wait(1000);
+    const twoSecond = setInterval(() => {
+      this.countdownAnimationValue += canvasWidth / 28;
 
-        if (this.countdownAnimationValue >= canvasWidth * 2) {
-          this.countdownAnimationValue = canvasWidth * 2;
-          clearInterval(twoSecond);
-        }
-      }, 25);
-    }, 1000);
+      if (this.countdownAnimationValue >= canvasWidth * 2) {
+        this.countdownAnimationValue = canvasWidth * 2;
+        clearInterval(twoSecond);
+      }
+    }, 25);
 
     // 1초
-    setTimeout(() => {
-      const oneSecond = setInterval(() => {
-        this.countdownAnimationValue += canvasWidth / 28;
+    await wait(1000);
+    const oneSecond = setInterval(() => {
+      this.countdownAnimationValue += canvasWidth / 28;
 
-        if (this.countdownAnimationValue >= canvasWidth * 3) {
-          this.countdownAnimationValue = canvasWidth * 3;
-          clearInterval(oneSecond);
-        }
-      }, 25);
-    }, 2000);
+      if (this.countdownAnimationValue >= canvasWidth * 3) {
+        this.countdownAnimationValue = canvasWidth * 3;
+        clearInterval(oneSecond);
+      }
+    }, 25);
 
     // 게임 시작
-    setTimeout(() => {
-      const gameStart = setInterval(() => {
-        this.countdownAnimationValue += canvasWidth / 14; // 350 동안 진행
+    await wait(1000);
+    const gameStart = setInterval(() => {
+      this.countdownAnimationValue += canvasWidth / 14; // 350 동안 진행
 
-        if (this.countdownAnimationValue >= canvasWidth * 4) {
-          this.countdownAnimationValue = canvasWidth * 4;
+      if (this.countdownAnimationValue >= canvasWidth * 4) {
+        this.countdownAnimationValue = canvasWidth * 4;
 
-          // 더이상 랜더링되지 않게
-          setTimeout(() => {
-            this.countdownAnimationValue += 10000;
-          }, 350);
+        // 더이상 랜더링되지 않게
+        setTimeout(() => {}, 350);
+      }
+    }, 25);
 
-          clearInterval(gameStart);
-        }
-      }, 25);
-    }, 3000);
+    await wait(500);
+
+    this.countdownAnimationValue += 10000;
+    clearInterval(gameStart);
   }
 }
 

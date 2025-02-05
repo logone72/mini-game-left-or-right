@@ -3,6 +3,7 @@ import { ResourceManager } from "./ResourceManager";
 import Score from "./Score";
 import Timer from "./Timer";
 import UiComponent from "./UiComponent";
+import { wait } from "./utils/time-helper";
 
 class GameInstance {
   static displayTime = {
@@ -38,14 +39,14 @@ class GameInstance {
     });
   }
 
-  startGame() {
-    setTimeout(() => {
-      this.gameStartCountdown.processAnimation();
-    }, GameInstance.displayTime.tutorial);
+  async startGame() {
+    await wait(GameInstance.displayTime.tutorial);
 
-    setTimeout(() => {
-      this.timer.start();
-    },  + GameInstance.displayTime.tutorial);
+    void this.gameStartCountdown.processAnimation();
+
+    await wait(GameStartCountdown.countDownTime);
+
+    this.timer.start();
   }
 
   loadResources() {

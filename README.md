@@ -2,6 +2,16 @@
 
 <img src="./src/assets/tutorialLeftRight.png" alt="game-tutorial" />
 
+## 리펙토링 작업 진행도
+
+- [x] 기본 UI
+- [x] 게임 시작 카운트다운
+- [x] 게임 시작 튜토리얼
+- [ ] 게임 진행 화면
+- [ ] 게임 종료 애니메이션
+- [ ] 게임 종료 화면
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
