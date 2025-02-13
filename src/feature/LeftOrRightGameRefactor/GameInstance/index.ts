@@ -1,9 +1,10 @@
-import Confetti from "./Confetti";
+import GameEnd from "./GameEnd";
 import GameStartCountdown from "./GameStartCountdown";
+import GameState from "./GameState";
 import { ResourceManager } from "./ResourceManager";
 import Score from "./Score";
 import Timer from "./Timer";
-import UiComponent from "./UiComponent";
+import GameUI from "./GameUI";
 import { wait } from "./utils/time-helper";
 
 class GameInstance {
@@ -14,11 +15,13 @@ class GameInstance {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
+  gameState: GameState;
   resourceManager: typeof ResourceManager;
   timer: Timer;
   score: Score;
-  ui: UiComponent;
+  ui: GameUI;
   gameStartCountdown: GameStartCountdown;
+  gameEnd: GameEnd;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -31,10 +34,16 @@ class GameInstance {
     this.resourceManager = ResourceManager;
     this.loadResources();
 
+    this.gameState = new GameState();
+
     this.timer = new Timer(this.ctx);
     this.score = new Score(this.ctx);
-    this.ui = new UiComponent(this.ctx, this.resourceManager);
+    this.ui = new GameUI(this.ctx, this.resourceManager);
     this.gameStartCountdown = new GameStartCountdown(this.ctx, {
+      canvasWidth: this.canvas.width,
+      canvasHeight: this.canvas.height,
+    });
+    this.gameEnd = new GameEnd(this.ctx, {
       canvasWidth: this.canvas.width,
       canvasHeight: this.canvas.height,
     });
@@ -44,16 +53,21 @@ class GameInstance {
   }
 
   async startGame() {
+    this.gameState.progress = "beforeStart";
+
     await wait(GameInstance.displayTime.tutorial);
 
     void this.gameStartCountdown.processAnimation();
-    this.drawConfetties();
 
     await wait(GameStartCountdown.countDownTime);
+
+    this.gameState.progress = "playing";
 
     this.timer.start();
 
     await wait(15000);
+
+    this.gameState.progress = "end";
   }
 
   renderGame() {
@@ -73,10 +87,18 @@ class GameInstance {
 
   render() {
     this.clearCanvas();
+    this.drawUi();
+
     this.timer.draw();
     this.score.drawScore();
-    this.drawUi();
-    this.gameStartCountdown.drawCountDown();
+
+    if (this.gameState.isBeforeStart) {
+      this.gameStartCountdown.drawCountDown();
+    }
+
+    if (this.gameState.isEnded) {
+      this.gameEnd.draw();
+    }
   }
 
   clearCanvas() {
@@ -93,48 +115,23 @@ class GameInstance {
       canvasWidth: this.canvas.width,
       canvasHeight: this.canvas.height,
     });
+    this.gameState.clear();
+    this.gameEnd.clear();
+    this.gameEnd = new GameEnd(this.ctx, {
+      canvasWidth: this.canvas.width,
+      canvasHeight: this.canvas.height,
+    });
 
     this.render();
   }
 
   addEventListeners() {
     window.addEventListener("blur", () => {
-      this.clearInstance();
+      // this.clearInstance();
     });
   }
 
-  drawConfetties() {
-    console.log("drawConfetties");
-    const confs = new Array(100).fill(undefined).map(
-      () =>
-        new Confetti({
-          canvasWidth: this.canvas.width,
-          canvasHeight: this.canvas.height,
-        })
-    );
-
-    const ctx = this.ctx;
-
-    ctx.save();
-    ctx.globalAlpha = 0.4;
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-    ctx.restore();
-
-    ctx.save();
-    confs.forEach((conf) => {
-      conf.update();
-      conf.draw(ctx);
-    });
-    ctx.restore();
-
-    ctx.save();
-    ctx.fillStyle = "white";
-    ctx.font = "bold 100px Trebuchet MS";
-    ctx.fillText("FINISH", 35, this.canvas.height / 2);
-    ctx.restore();
-  }
+  drawGameEnd() {}
 }
 
 export default GameInstance;

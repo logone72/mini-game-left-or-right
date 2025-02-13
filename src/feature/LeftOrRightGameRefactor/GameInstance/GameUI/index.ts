@@ -1,7 +1,7 @@
 import { ResourceManager } from "../ResourceManager";
 import { drawRoundRect } from "../utils/canvas-helper";
 
-class UiComponent {
+class GameUI {
   static viewConstant = {
     // 버튼 위치 세로 = height/ 3 = 167 * 2 = 334, 가로 좌우 마진 30px 4등분 300 / 4 = 75, 왼쪽 75 오른쪽 225
     height: 75,
@@ -49,7 +49,7 @@ class UiComponent {
   }
 
   drawArrowButton() {
-    const viewConstant = UiComponent.viewConstant;
+    const viewConstant = GameUI.viewConstant;
 
     this.ctx.drawImage(
       this.resourceManager.arrowLeftButton,
@@ -69,8 +69,8 @@ class UiComponent {
   }
 
   drawWhichLRGuide(location: "left" | "right") {
-    const viewConstant = UiComponent.viewConstant;
-    const whichLRGuideViewConstant = UiComponent.whichLRGuideViewConstant;
+    const viewConstant = GameUI.viewConstant;
+    const whichLRGuideViewConstant = GameUI.whichLRGuideViewConstant;
     const ctx = this.ctx;
 
     let positionX = 0;
@@ -132,4 +132,4 @@ class UiComponent {
   }
 }
 
-export default UiComponent;
+export default GameUI;

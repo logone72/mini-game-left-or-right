@@ -1,4 +1,6 @@
 class Confetti {
+  private static readonly COLOURS = ["#fde132", "#009bde", "#ff6b00"];
+
   private x: number;
   private y: number;
   private rotation: number;
@@ -20,19 +22,18 @@ class Confetti {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
 
-    const colours = ["#fde132", "#009bde", "#ff6b00"];
-
     this.x = Math.round(Math.random() * this.canvasWidth);
     this.y =
       Math.round(Math.random() * this.canvasHeight) - this.canvasHeight / 2;
     this.rotation = Math.random() * 360;
 
     const size = Math.random() * (this.canvasWidth / 60);
-    this.size = size < 15 ? 15 : size;
+    this.size = Math.max(size, 15);
 
-    this.color = colours[Math.floor(colours.length * Math.random())];
+    this.color =
+      Confetti.COLOURS[Math.floor(Confetti.COLOURS.length * Math.random())];
     this.speed = this.size / 7;
-    this.opacity = Math.random();
+    this.opacity = (Math.random() + 1) / 2;
     this.shiftDirection = Math.random() > 0.5 ? 1 : -1;
   }
 
