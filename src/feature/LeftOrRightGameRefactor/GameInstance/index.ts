@@ -6,6 +6,8 @@ import Score from "./Score";
 import Timer from "./Timer";
 import GameUI from "./GameUI";
 import { wait } from "./utils/time-helper";
+import MonsterManager from "./MonsterManager";
+import ControlManager from "./ControlManager";
 
 class GameInstance {
   static displayTime = {
@@ -22,6 +24,8 @@ class GameInstance {
   ui: GameUI;
   gameStartCountdown: GameStartCountdown;
   gameEnd: GameEnd;
+  monsterManager: MonsterManager;
+  controlManager: ControlManager;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -47,6 +51,17 @@ class GameInstance {
       canvasWidth: this.canvas.width,
       canvasHeight: this.canvas.height,
     });
+    this.monsterManager = new MonsterManager({
+      canvasWidth: this.canvas.width,
+      canvasHeight: this.canvas.height,
+      ctx: this.ctx,
+      resourceManager: this.resourceManager,
+    });
+    this.controlManager = new ControlManager({
+      canvas: this.canvas,
+      onLeft: this.onLeft.bind(this),
+      onRight: this.onRight.bind(this),
+    });
 
     this.render();
     this.addEventListeners();
@@ -54,7 +69,8 @@ class GameInstance {
 
   async startGame() {
     this.gameState.progress = "beforeStart";
-
+    this.monsterManager.init();
+    this.controlManager.init();
     await wait(GameInstance.displayTime.tutorial);
 
     void this.gameStartCountdown.processAnimation();
@@ -62,12 +78,13 @@ class GameInstance {
     await wait(GameStartCountdown.countDownTime);
 
     this.gameState.progress = "playing";
-
+    this.controlManager.enable();
     this.timer.start();
 
     await wait(15000);
 
     this.gameState.progress = "end";
+    this.controlManager.disable();
   }
 
   renderGame() {
@@ -91,6 +108,7 @@ class GameInstance {
 
     this.timer.draw();
     this.score.drawScore();
+    this.monsterManager.render();
 
     if (this.gameState.isBeforeStart) {
       this.gameStartCountdown.drawCountDown();
@@ -123,6 +141,18 @@ class GameInstance {
     });
 
     this.render();
+  }
+
+  onLeft() {
+    console.log("onLeft");
+    this.monsterManager.pop("left");
+    this.monsterManager.insertNewMonster();
+  }
+
+  onRight() {
+    console.log("onRight");
+    this.monsterManager.pop("right");
+    this.monsterManager.insertNewMonster();
   }
 
   addEventListeners() {

@@ -3,6 +3,7 @@ import BlueMonsterImg from "../../../../assets/BlueMonster.png";
 import GreenMonsterImg from "../../../../assets/GreenMonster.png";
 import ArrowLeftButtonImg from "../../../../assets/neonArrowLeft.png";
 import ArrowRightButtonImg from "../../../../assets/neonArrowRight.png";
+import { MonsterColor } from "../MonsterManager/modules/Monster";
 
 export const ResourceManager = {
   blueMonster: new Image(),
@@ -15,5 +16,14 @@ export const ResourceManager = {
     this.greenMonster.src = GreenMonsterImg;
     this.arrowLeftButton.src = ArrowLeftButtonImg;
     this.arrowRightButton.src = ArrowRightButtonImg;
+  },
+
+  getMonsterImage(color: MonsterColor) {
+    switch (color) {
+      case "blue":
+        return this.blueMonster;
+      case "green":
+        return this.greenMonster;
+    }
   },
 };

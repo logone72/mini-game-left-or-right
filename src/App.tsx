@@ -1,11 +1,11 @@
 import "./App.css";
-import LeftOrRightGame from "./feature/LeftOrRightGame";
+// import LeftOrRightGame from "./feature/LeftOrRightGame";
 import LeftOrRightGameRefactor from "./feature/LeftOrRightGameRefactor";
 
 function App() {
   return (
     <div>
-      <LeftOrRightGame />
+      {/* <LeftOrRightGame /> */}
       <LeftOrRightGameRefactor />
     </div>
   );
