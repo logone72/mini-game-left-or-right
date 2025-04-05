@@ -147,14 +147,16 @@ class GameInstance {
   onControl(direction: ControlDirection) {
     console.log("onControl", direction);
 
-    const monster = this.monsterManager.pop(direction);
-
+    const monster = this.monsterManager.pop();
     const monsterType = monster.type;
 
     if (monsterType === direction) {
       this.score.correct();
+      this.monsterManager.fadeOutMonster(direction, monster);
+      this.monsterManager.setWrongMonster(null);
     } else {
       this.score.incorrect();
+      this.monsterManager.setWrongMonster(monster);
     }
 
     this.monsterManager.insertNewMonster();

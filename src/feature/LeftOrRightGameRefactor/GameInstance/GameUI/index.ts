@@ -1,3 +1,4 @@
+import type { MonsterType } from "../@types";
 import { ResourceManager } from "../ResourceManager";
 import { drawRoundRect } from "../utils/canvas-helper";
 
@@ -68,14 +69,15 @@ class GameUI {
     );
   }
 
-  drawWhichLRGuide(location: "left" | "right") {
+  drawWhichLRGuide(location: MonsterType) {
     const viewConstant = GameUI.viewConstant;
     const whichLRGuideViewConstant = GameUI.whichLRGuideViewConstant;
     const ctx = this.ctx;
 
     let positionX = 0;
     let text = "";
-    let monsterImage: HTMLImageElement = this.resourceManager.greenMonster;
+    let monsterImage: HTMLImageElement =
+      this.resourceManager.getMonsterImage(location);
 
     if (location === "left") {
       positionX = viewConstant.left.x;
@@ -83,7 +85,7 @@ class GameUI {
     } else if (location === "right") {
       positionX = viewConstant.right.x;
       text = "우측으로";
-      monsterImage = this.resourceManager.blueMonster;
+      monsterImage = this.resourceManager.getMonsterImage(location);
     }
 
     // 하얀색 아래쪽 둥근 바탕

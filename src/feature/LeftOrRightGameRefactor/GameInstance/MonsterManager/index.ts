@@ -21,6 +21,8 @@ class MonsterManager {
     right: Monster[];
     wrong: Monster | null;
   };
+  wrongMonster: Monster | null;
+  wrongMonsterTimeoutId: ReturnType<typeof setTimeout> | null;
 
   canvasWidth: number;
   canvasHeight: number;
@@ -37,6 +39,8 @@ class MonsterManager {
       right: [],
       wrong: null,
     };
+    this.wrongMonster = null;
+    this.wrongMonsterTimeoutId = null;
 
     this.canvasWidth = options.canvasWidth;
     this.canvasHeight = options.canvasHeight;
@@ -77,14 +81,16 @@ class MonsterManager {
     this.monsters.forEach((monster) => monster.render());
     this.fadingMonster.left.forEach((monster) => monster.render());
     this.fadingMonster.right.forEach((monster) => monster.render());
+
+    if (this.wrongMonster) {
+      this.wrongMonster.render("wrong");
+    }
   }
 
-  pop(direction: FadingMonsterDirection): Monster {
+  pop(): Monster {
     const monster = this.monsters.pop();
 
     if (!monster) throw new Error("Monster not found which should not happen.");
-
-    this.fadeOutMonster(direction, monster);
 
     return monster;
   }
@@ -112,6 +118,20 @@ class MonsterManager {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  setWrongMonster(monster: Monster | null) {
+    this.wrongMonster = monster;
+
+    if (this.wrongMonsterTimeoutId) {
+      clearTimeout(this.wrongMonsterTimeoutId);
+    }
+
+    if (!this.wrongMonster) return;
+
+    this.wrongMonsterTimeoutId = setTimeout(() => {
+      this.wrongMonster = null;
+    }, 100);
   }
 }
 

@@ -40,8 +40,14 @@ class Monster {
     this.image = this.resourceManager.getMonsterImage(this.type);
   }
 
-  render() {
+  render(renderType: "normal" | "wrong" = "normal") {
     this.ctx.save();
+
+    if (renderType === "wrong") {
+      this.ctx.globalAlpha = 0.5;
+      this.ctx.fillStyle = "red";
+    }
+
     this.ctx.drawImage(
       this.resourceManager.getMonsterImage(this.type),
       this.x,
@@ -49,6 +55,20 @@ class Monster {
       this.width,
       this.height
     );
+    9;
+
+    if (renderType === "wrong") {
+      this.ctx.beginPath();
+      this.ctx.arc(
+        this.x + this.width / 2,
+        this.y + this.height / 2,
+        this.width / 2,
+        0,
+        2 * Math.PI
+      );
+      this.ctx.fill();
+    }
+
     this.ctx.restore();
   }
 }
