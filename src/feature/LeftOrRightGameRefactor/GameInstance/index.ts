@@ -88,9 +88,9 @@ class GameInstance {
     this.controlManager.disable();
   }
 
-  renderGame() {
+  startRendering() {
     this.render();
-    requestAnimationFrame(() => this.renderGame());
+    requestAnimationFrame(() => this.startRendering());
   }
 
   loadResources() {
