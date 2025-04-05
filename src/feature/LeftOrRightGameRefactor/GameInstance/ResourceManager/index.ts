@@ -5,6 +5,7 @@ import ArrowLeftButtonImg from "../../../../assets/neonArrowLeft.png";
 import ArrowRightButtonImg from "../../../../assets/neonArrowRight.png";
 import PikachuImg from "../../../../assets/Pikachu.png";
 import CharmanderImg from "../../../../assets/Charmander.png";
+import tutorialImg from "../../../../assets/tutorialLeftRight.png";
 import type { MonsterType } from "../@types";
 
 export const ResourceManager = {
@@ -14,6 +15,7 @@ export const ResourceManager = {
   arrowRightButton: new Image(),
   pikachu: new Image(),
   charmander: new Image(),
+  tutorial: new Image(),
 
   loadResources() {
     this.blueMonster.src = BlueMonsterImg;
@@ -22,6 +24,7 @@ export const ResourceManager = {
     this.arrowRightButton.src = ArrowRightButtonImg;
     this.pikachu.src = PikachuImg;
     this.charmander.src = CharmanderImg;
+    this.tutorial.src = tutorialImg;
   },
 
   getMonsterImage(type: MonsterType) {

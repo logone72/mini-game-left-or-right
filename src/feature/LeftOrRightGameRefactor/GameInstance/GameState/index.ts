@@ -1,5 +1,6 @@
 class GameState {
-  progress: "beforeStart" | "playing" | "end" = "beforeStart";
+  progress: "beforeStart" | "tutorial" | "countDown" | "playing" | "end" =
+    "beforeStart";
   score: number = 0;
 
   public get isBeforeStart() {
@@ -12,6 +13,14 @@ class GameState {
 
   public get isEnded() {
     return this.progress === "end";
+  }
+
+  public get isTutorial() {
+    return this.progress === "tutorial";
+  }
+
+  public get isCountDown() {
+    return this.progress === "countDown";
   }
 
   public clear() {

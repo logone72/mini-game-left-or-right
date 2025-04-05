@@ -95,7 +95,7 @@ class GameStartCountdown {
     ctx.restore();
   }
 
-  async processAnimation() {
+  async startAnimation() {
     const canvasWidth = this.options.canvasWidth;
 
     // 3초

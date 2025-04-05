@@ -2,6 +2,13 @@ import type { MonsterType } from "../@types";
 import { ResourceManager } from "../ResourceManager";
 import { drawRoundRect } from "../utils/canvas-helper";
 
+interface GameUIOptions {
+  ctx: CanvasRenderingContext2D;
+  resourceManager: typeof ResourceManager;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 class GameUI {
   static viewConstant = {
     // 버튼 위치 세로 = height/ 3 = 167 * 2 = 334, 가로 좌우 마진 30px 4등분 300 / 4 = 75, 왼쪽 75 오른쪽 225
@@ -23,7 +30,7 @@ class GameUI {
     font: "bold 18px Trebuchet MS",
   };
 
-  static whichLRGuideViewConstant = {
+  static leftRightGuideViewConstant = {
     bottomRadius: {
       tl: 5,
       tr: 5,
@@ -40,13 +47,14 @@ class GameUI {
 
   ctx: CanvasRenderingContext2D;
   resourceManager: typeof ResourceManager;
+  canvasWidth: number;
+  canvasHeight: number;
 
-  constructor(
-    ctx: CanvasRenderingContext2D,
-    resourceManager: typeof ResourceManager
-  ) {
-    this.ctx = ctx;
-    this.resourceManager = resourceManager;
+  constructor(options: GameUIOptions) {
+    this.ctx = options.ctx;
+    this.resourceManager = options.resourceManager;
+    this.canvasWidth = options.canvasWidth;
+    this.canvasHeight = options.canvasHeight;
   }
 
   drawArrowButton() {
@@ -69,9 +77,8 @@ class GameUI {
     );
   }
 
-  drawWhichLRGuide(location: MonsterType) {
+  drawLeftRightGuide(location: MonsterType) {
     const viewConstant = GameUI.viewConstant;
-    const whichLRGuideViewConstant = GameUI.whichLRGuideViewConstant;
     const ctx = this.ctx;
 
     let positionX = 0;
@@ -97,7 +104,7 @@ class GameUI {
       viewConstant.left.y - 110 - 30,
       viewConstant.width,
       110,
-      whichLRGuideViewConstant.bottomRadius,
+      GameUI.leftRightGuideViewConstant.bottomRadius,
       true,
       false
     );
@@ -112,7 +119,7 @@ class GameUI {
       viewConstant.left.y - 110 - 30,
       viewConstant.width,
       25,
-      whichLRGuideViewConstant.headerRadius,
+      GameUI.leftRightGuideViewConstant.headerRadius,
       true,
       false
     );
@@ -131,6 +138,22 @@ class GameUI {
       60,
       60
     );
+  }
+
+  drawTutorial() {
+    const ctx = this.ctx;
+
+    ctx.save();
+
+    ctx.drawImage(
+      this.resourceManager.tutorial,
+      0,
+      0,
+      this.canvasWidth,
+      this.canvasHeight
+    );
+
+    ctx.restore();
   }
 }
 

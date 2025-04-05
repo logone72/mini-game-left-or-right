@@ -43,7 +43,12 @@ class GameInstance {
 
     this.timer = new Timer(this.ctx);
     this.score = new Score(this.ctx);
-    this.ui = new GameUI(this.ctx, this.resourceManager);
+    this.ui = new GameUI({
+      ctx: this.ctx,
+      resourceManager: this.resourceManager,
+      canvasWidth: this.canvas.width,
+      canvasHeight: this.canvas.height,
+    });
     this.gameStartCountdown = new GameStartCountdown(this.ctx, {
       canvasWidth: this.canvas.width,
       canvasHeight: this.canvas.height,
@@ -72,10 +77,12 @@ class GameInstance {
     this.gameState.progress = "beforeStart";
     this.monsterManager.init();
     this.controlManager.init();
+
+    this.gameState.progress = "tutorial";
     await wait(GameInstance.displayTime.tutorial);
 
-    void this.gameStartCountdown.processAnimation();
-
+    this.gameState.progress = "countDown";
+    void this.gameStartCountdown.startAnimation();
     await wait(GameStartCountdown.countDownTime);
 
     this.gameState.progress = "playing";
@@ -99,8 +106,8 @@ class GameInstance {
 
   drawUi() {
     this.ui.drawArrowButton();
-    this.ui.drawWhichLRGuide("left");
-    this.ui.drawWhichLRGuide("right");
+    this.ui.drawLeftRightGuide("left");
+    this.ui.drawLeftRightGuide("right");
   }
 
   render() {
@@ -111,8 +118,12 @@ class GameInstance {
     this.score.drawScore();
     this.monsterManager.render();
 
-    if (this.gameState.isBeforeStart) {
+    if (this.gameState.isCountDown) {
       this.gameStartCountdown.drawCountDown();
+    }
+
+    if (this.gameState.isTutorial) {
+      this.ui.drawTutorial();
     }
 
     if (this.gameState.isEnded) {

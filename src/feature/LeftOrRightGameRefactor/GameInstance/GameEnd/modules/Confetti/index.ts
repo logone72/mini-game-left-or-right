@@ -11,6 +11,7 @@ class Confetti {
   private shiftDirection: number;
   private canvasWidth: number;
   private canvasHeight: number;
+  private bottomBorderY: number;
 
   constructor({
     canvasWidth,
@@ -30,17 +31,13 @@ class Confetti {
     const size = Math.random() * (this.canvasWidth / 60);
     this.size = Math.max(size, 15);
 
+    this.bottomBorderY = this.canvasHeight + this.size * 2;
+
     this.color =
       Confetti.COLOURS[Math.floor(Confetti.COLOURS.length * Math.random())];
     this.speed = this.size / 7;
     this.opacity = (Math.random() + 1) / 2;
     this.shiftDirection = Math.random() > 0.5 ? 1 : -1;
-  }
-
-  private border(): void {
-    if (this.y >= this.canvasHeight) {
-      this.y = this.canvasHeight;
-    }
   }
 
   public update(): void {
@@ -51,8 +48,8 @@ class Confetti {
       this.rotation += (this.shiftDirection * this.speed) / 100;
     }
 
-    if (this.y > this.canvasHeight) {
-      this.border();
+    if (this.y >= this.bottomBorderY) {
+      this.y = this.bottomBorderY;
     }
   }
 
