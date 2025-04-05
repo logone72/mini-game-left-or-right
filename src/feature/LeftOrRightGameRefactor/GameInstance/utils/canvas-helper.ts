@@ -1,4 +1,4 @@
-import { radiusType } from "../type";
+import { radiusType } from "../@types";
 
 export function drawRoundRect(
   ctx: CanvasRenderingContext2D,

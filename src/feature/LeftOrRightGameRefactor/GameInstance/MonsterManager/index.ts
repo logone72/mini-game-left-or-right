@@ -3,8 +3,9 @@ import { ResourceManager } from "../ResourceManager";
 import PositionCalculator from "./modules/PositionCalculator";
 import { MONSTER_MAX_COUNT } from "./constant";
 import Animator from "./modules/Animator";
+import type { ControlDirection } from "../@types";
 
-export type FadingMonsterDirection = "left" | "right";
+export type FadingMonsterDirection = ControlDirection;
 
 export interface MonsterManagerOptions {
   canvasWidth: number;

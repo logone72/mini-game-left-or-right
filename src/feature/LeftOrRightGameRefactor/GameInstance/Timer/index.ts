@@ -1,4 +1,4 @@
-import { radiusType } from "../type";
+import { radiusType } from "../@types";
 import { drawRoundRect } from "../utils/canvas-helper";
 
 type GameTime = {

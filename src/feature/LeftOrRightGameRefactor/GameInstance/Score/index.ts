@@ -13,6 +13,14 @@ class Score {
     this.scoreValue = 0;
   }
 
+  correct() {
+    this.scoreValue += 1;
+  }
+
+  incorrect() {
+    this.scoreValue -= 1;
+  }
+
   drawScore() {
     const ctx = this.ctx;
     const score = this.scoreValue;

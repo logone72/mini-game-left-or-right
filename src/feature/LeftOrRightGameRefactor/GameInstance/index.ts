@@ -8,6 +8,7 @@ import GameUI from "./GameUI";
 import { wait } from "./utils/time-helper";
 import MonsterManager from "./MonsterManager";
 import ControlManager from "./ControlManager";
+import type { ControlDirection } from "./@types";
 
 class GameInstance {
   static displayTime = {
@@ -59,8 +60,8 @@ class GameInstance {
     });
     this.controlManager = new ControlManager({
       canvas: this.canvas,
-      onLeft: this.onLeft.bind(this),
-      onRight: this.onRight.bind(this),
+      onLeft: () => this.onControl.call(this, "left"),
+      onRight: () => this.onControl.call(this, "right"),
     });
 
     this.render();
@@ -143,15 +144,19 @@ class GameInstance {
     this.render();
   }
 
-  onLeft() {
-    console.log("onLeft");
-    this.monsterManager.pop("left");
-    this.monsterManager.insertNewMonster();
-  }
+  onControl(direction: ControlDirection) {
+    console.log("onControl", direction);
 
-  onRight() {
-    console.log("onRight");
-    this.monsterManager.pop("right");
+    const monster = this.monsterManager.pop(direction);
+
+    const monsterType = monster.type;
+
+    if (monsterType === direction) {
+      this.score.correct();
+    } else {
+      this.score.incorrect();
+    }
+
     this.monsterManager.insertNewMonster();
   }
 

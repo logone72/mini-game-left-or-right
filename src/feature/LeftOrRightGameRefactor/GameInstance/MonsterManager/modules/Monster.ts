@@ -1,10 +1,9 @@
+import { MonsterType } from "../../@types";
 import { ResourceManager } from "../../ResourceManager";
 import { MONSTER_SIZE } from "../constant";
 
-export type MonsterColor = "blue" | "green";
-
 interface MonsterOptions {
-  color: MonsterColor;
+  type: MonsterType;
   x: number;
   y: number;
   width?: number;
@@ -14,7 +13,7 @@ interface MonsterOptions {
 }
 
 class Monster {
-  color: MonsterColor;
+  type: MonsterType;
   width: number;
   height: number;
   x: number;
@@ -23,28 +22,28 @@ class Monster {
   resourceManager: typeof ResourceManager;
   image: HTMLImageElement;
 
-  static createRandomMonster(options: Omit<MonsterOptions, "color">) {
+  static createRandomMonster(options: Omit<MonsterOptions, "type">) {
     return new Monster({
       ...options,
-      color: Math.random() < 0.5 ? "blue" : "green",
+      type: Math.random() < 0.5 ? "left" : "right",
     });
   }
 
   constructor(options: MonsterOptions) {
-    this.color = options.color;
+    this.type = options.type;
     this.width = options.width || MONSTER_SIZE.width;
     this.height = options.height || MONSTER_SIZE.height;
     this.x = options.x;
     this.y = options.y;
     this.ctx = options.ctx;
     this.resourceManager = options.resourceManager;
-    this.image = this.resourceManager.getMonsterImage(this.color);
+    this.image = this.resourceManager.getMonsterImage(this.type);
   }
 
   render() {
     this.ctx.save();
     this.ctx.drawImage(
-      this.resourceManager.getMonsterImage(this.color),
+      this.resourceManager.getMonsterImage(this.type),
       this.x,
       this.y,
       this.width,
