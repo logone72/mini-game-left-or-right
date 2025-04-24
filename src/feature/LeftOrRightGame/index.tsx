@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, memo } from "react";
+import { useRef, useEffect, useState, memo } from "react";
 
 //이미지
 import BlueMonsterImg from "../../assets/BlueMonster.png";
